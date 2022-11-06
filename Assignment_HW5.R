@@ -225,3 +225,46 @@ for ( i in 1:100) {
 }
 colnames(modelcoeff) <- c("Intercept", "Month" , "SchedElapsedTime", "Distance", "UniqueCarrierDL","UniqueCarrierUA" )
 summary(modelcoeff) # the average values are picked as func 1 coefficients
+
+## testing the functions 
+func1 <- function  (testinset) {
+  testinset$prob <- 0
+  for ( v in 1 : nrow(testinset))
+  {
+    uniquecarriercoeff =0;
+    if (testinset[v,]$UniqueCarrier == 'DL')
+    {uniquecarriercoeff = -0.7706  }
+    if (testinset[v,]$UniqueCarrier == 'UA')
+    {uniquecarriercoeff =-0.21274  }
+    prob = exp(0.6540+
+                 -0.10637 * as.numeric(testinset[v,]$Month)+
+                 0.015055  * as.numeric(testinset[v,]$SchedElapsedTime)+
+                 -0.002271  * as.numeric(testinset[v,]$Distance)+
+                 uniquecarriercoeff)/(1+ exp(0.6540+
+                                               -0.10637 * as.numeric(testinset[v,]$Month)+
+                                               0.015055  * as.numeric(testinset[v,]$SchedElapsedTime)+
+                                               -0.002271  * as.numeric(testinset[v,]$Distance)+
+                                               uniquecarriercoeff))
+    testinset[v,]$prob <-prob
+    # cat(paste0("prob : " , prob, "cancellation value: ",testinset[v,]$Canceled , "\n"))
+  }
+  return (testinset$prob)
+}
+
+func2 <-function(testinset){
+  score <- func1(testinset)
+  label <- ifelse(score > 0.5055 , 1, 0)
+  return(label)
+}
+
+######
+
+sectest<-testset
+probtest<-func1(sectest)
+
+anaset <-  data.frame(sectest$Canceled,probtest)
+pred<- ifelse(probtest > 0.5055,1,0) # adopting the threshold to predict cancellations with higer accuracy
+table(sectest$Canceled, pred)
+AUCtestanalysis_valmed <- ROC_func(anaset, 1, 2, add_on =F, color = 21)
+cat(paste0("Model  AUC is ", ": ", format(AUCtestanalysis_valmed, digits = 5), "\n"))
+
