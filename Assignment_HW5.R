@@ -85,7 +85,7 @@ barplot(prop.table(table(flight$Canceled)) * 100, main = "Cancellation",xlab = "
 # also it appears that schedule elapse time and distance are highly correlated
 corflight <- cor(flight[,c(1,2,3,5,8)])
 corrplot(corflight, method = 'number',number.cex=0.6,title="Heat map",mar=c(0,0,1,0))
-corrplot(D, method = "circle")
+corrplot(corflight, method = "circle")
 
 #Cancellations by month
 # we can observe that their are higher cancellations in the first two quarters
@@ -197,13 +197,13 @@ AUCrf <- ROC_func(df, 1, 2, add_on = T, color = 7)
 cat(paste0("Model  AUC is ", ": ", format(AUCrf, digits = 5), "\n"))
 
 ###########################################################################
-#Naive Bayes AUC is ~0.36816
+#Naive Bayes AUC is ~0.54696
 library(naivebayes)
 flightnb<-train
 flightnb$Canceled <- as.factor(flightnb$Canceled)
 modelnb1 <- naive_bayes(Canceled ~ Month + SchedElapsedTime + Distance+ UniqueCarrier , flightnb)
-prednb1 <- predict(modelnb1,test,type = "prob")
-dffnb1 <- data.frame(label  = ifelse(test$Canceled == "1", 1, 0),
+prednb1 <- predict(modelnb1,testset,type = "prob")
+dffnb1 <- data.frame(label  = ifelse(testset$Canceled == "1", 1, 0),
                      m1 = ifelse(prednb1[,1] > prednb1[,2] , prednb1[,1] ,prednb1[,2]))
 AUCnb1 <- ROC_func(dffnb1, 1, 2, add_on = T, color = 8)
 cat(paste0("Naive bayes Model   AUC is ", ": ", format(AUCnb1, digits = 5), "\n"))
@@ -269,4 +269,3 @@ pred<- ifelse(probtest > 0.5055,1,0) # adopting the threshold to predict cancell
 table(sectest$Canceled, pred)
 AUCtestanalysis_valmed <- ROC_func(anaset, 1, 2, add_on =F, color = 21)
 cat(paste0("Model  AUC is ", ": ", format(AUCtestanalysis_valmed, digits = 5), "\n"))
-
