@@ -215,8 +215,8 @@ modelcoeff  <- data.frame(matrix(ncol = 6, nrow = 0))
 for ( i in 1:100) {
   set.seed(i)
   # #define the train and test sets 
-  # train <- rbind(flightcanc[(sample(1:nrow(flightcanc), 600)),] , flightnoncanc[(sample(1:nrow(flightnoncanc), 600)),])
-  # testset<-setdiff(flight,train)
+  train <- rbind(flightcanc[(sample(1:nrow(flightcanc), 600)),] , flightnoncanc[(sample(1:nrow(flightnoncanc), 600)),])
+  testset<-setdiff(flight,train)
   #Build the model
   modelitr <- glm(Canceled ~ Month + SchedElapsedTime+ Distance+ UniqueCarrier, data = train ,family = binomial)
   modelcoeff[i,] <- coefficients(modelitr)
