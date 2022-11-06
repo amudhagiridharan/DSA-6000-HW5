@@ -95,6 +95,8 @@ corrplot(D, method = "circle")
 ggplot(flight, aes(x = factor(Month), y = sum(Canceled))) + 
   geom_bar(stat = "identity")
 
+
+## Used to check if grouping months would add accuracy to the model. But it ended up not helping. 
 WOEstuffs2 = woe.binning(df = flight, 'Canceled', 'Month' )
 WOEstuffs = as.data.frame(WOEstuffs2)
 woe.binning.table(WOEstuffs2)
