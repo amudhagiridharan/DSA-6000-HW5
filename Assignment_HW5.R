@@ -164,8 +164,8 @@ cat(paste0("Model  AUC is ", ": ", format(AUCm2, digits = 5), "\n"))
 ###########################################################################
 m3 <- glm (Canceled ~ .-ArrDelay - DepDelay - DepartureTime  , data = train , family = binomial )
 summary(m3)
-pred3 <- predict(m3,diffset,type =  "response")
-dff <- data.frame(label  = ifelse(diffset$Canceled == "1", 1, 0),
+pred3 <- predict(m3,testset,type =  "response")
+dff <- data.frame(label  = ifelse(testset$Canceled == "1", 1, 0),
                   m1 = pred3)
 AUCm3 <- ROC_func(dff, 1, 2, add_on = T, color = 5)
 cat(paste0("Model  AUC is ", ": ", format(AUCm3, digits = 5), "\n"))
